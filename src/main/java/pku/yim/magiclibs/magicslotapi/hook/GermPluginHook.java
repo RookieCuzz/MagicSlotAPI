@@ -1,16 +1,16 @@
-package com.github.playerslotapi.hook;
+package pku.yim.magiclibs.magicslotapi.hook;
 
 import com.germ.germplugin.GermPlugin;
 import com.germ.germplugin.api.GermPacketAPI;
 import com.germ.germplugin.api.GermSlotAPI;
 import com.germ.germplugin.api.event.gui.GermGuiSlotPreClickEvent;
 import com.germ.germplugin.api.event.gui.GermGuiSlotSavedEvent;
-import com.github.playerslotapi.PlayerSlotAPI;
-import com.github.playerslotapi.event.SlotUpdateEvent;
-import com.github.playerslotapi.event.UpdateTrigger;
-import com.github.playerslotapi.slot.PlayerSlot;
-import com.github.playerslotapi.slot.impl.GermPluginSlot;
-import com.github.playerslotapi.util.Events;
+import pku.yim.magiclibs.magicslotapi.MagicSlotAPI;
+import pku.yim.magiclibs.magicslotapi.event.SlotUpdateEvent;
+import pku.yim.magiclibs.magicslotapi.event.UpdateTrigger;
+import pku.yim.magiclibs.magicslotapi.slot.PlayerSlot;
+import pku.yim.magiclibs.magicslotapi.slot.impl.GermPluginSlot;
+import pku.yim.magiclibs.magicslotapi.util.Events;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -26,7 +26,7 @@ public class GermPluginHook {
     }
 
     public static void register() {
-        Map<String, PlayerSlot> slotMap = PlayerSlotAPI.getAPI().getSlotMap();
+        Map<String, PlayerSlot> slotMap = MagicSlotAPI.getAPI().getSlotMap();
         try {
             Events.subscribe(GermGuiSlotSavedEvent.class, event -> {
                 String identifier = event.getIdentity();

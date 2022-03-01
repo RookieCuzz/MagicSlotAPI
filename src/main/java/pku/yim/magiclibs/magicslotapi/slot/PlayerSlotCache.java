@@ -1,9 +1,9 @@
-package com.github.playerslotapi.slot;
+package pku.yim.magiclibs.magicslotapi.slot;
 
-import com.github.playerslotapi.PlayerSlotAPI;
-import com.github.playerslotapi.event.AsyncSlotUpdateEvent;
-import com.github.playerslotapi.event.UpdateTrigger;
-import com.github.playerslotapi.util.Util;
+import pku.yim.magiclibs.magicslotapi.MagicSlotAPI;
+import pku.yim.magiclibs.magicslotapi.event.AsyncSlotUpdateEvent;
+import pku.yim.magiclibs.magicslotapi.event.UpdateTrigger;
+import pku.yim.magiclibs.magicslotapi.util.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -35,7 +35,7 @@ public class PlayerSlotCache {
 
     public PlayerSlotCache(Player player) {
         this.player = player;
-        for (PlayerSlot slot : PlayerSlotAPI.getAPI().getSlotMap().values()) {
+        for (PlayerSlot slot : MagicSlotAPI.getAPI().getSlotMap().values()) {
             initSlot(slot);
         }
     }
@@ -125,7 +125,7 @@ public class PlayerSlotCache {
                 if (Bukkit.isPrimaryThread() || slot.isAsyncSafe()) {
                     slot.set(player, entry.getValue());
                 } else {
-                    Bukkit.getScheduler().runTask(PlayerSlotAPI.getPlugin(), () -> {
+                    Bukkit.getScheduler().runTask(MagicSlotAPI.getPlugin(), () -> {
                         slot.set(player, entry.getValue());
                     });
                 }
@@ -143,7 +143,7 @@ public class PlayerSlotCache {
     public void updateItem(UpdateTrigger trigger, PlayerSlot slot, ItemStack item) {
         final ItemStack oldItem = itemCache.getOrDefault(slot, AIR);
         final ItemStack newItem = item == null ? new ItemStack(Material.AIR) : item.clone();
-        Bukkit.getScheduler().runTaskAsynchronously(PlayerSlotAPI.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(MagicSlotAPI.getPlugin(), () -> {
             if (oldItem.equals(newItem)) {
                 return;
             }
@@ -157,7 +157,7 @@ public class PlayerSlotCache {
      * 更新所有槽位
      */
     public void updateAll() {
-        for (PlayerSlot slot : PlayerSlotAPI.getAPI().getSlotMap().values()) {
+        for (PlayerSlot slot : MagicSlotAPI.getAPI().getSlotMap().values()) {
             slot.get(player, item -> updateItem(UpdateTrigger.CUSTOM, slot, item));
         }
     }

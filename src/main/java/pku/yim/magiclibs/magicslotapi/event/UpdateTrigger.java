@@ -1,4 +1,4 @@
-package com.github.playerslotapi.event;
+package pku.yim.magiclibs.magicslotapi.event;
 
 public enum UpdateTrigger {
     /**

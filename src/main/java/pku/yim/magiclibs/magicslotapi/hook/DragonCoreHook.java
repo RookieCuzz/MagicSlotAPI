@@ -1,12 +1,12 @@
-package com.github.playerslotapi.hook;
+package pku.yim.magiclibs.magicslotapi.hook;
 
 
-import com.github.playerslotapi.PlayerSlotAPI;
-import com.github.playerslotapi.event.SlotUpdateEvent;
-import com.github.playerslotapi.event.UpdateTrigger;
-import com.github.playerslotapi.slot.PlayerSlot;
-import com.github.playerslotapi.util.Events;
-import com.github.playerslotapi.util.Util;
+import pku.yim.magiclibs.magicslotapi.MagicSlotAPI;
+import pku.yim.magiclibs.magicslotapi.event.SlotUpdateEvent;
+import pku.yim.magiclibs.magicslotapi.event.UpdateTrigger;
+import pku.yim.magiclibs.magicslotapi.slot.PlayerSlot;
+import pku.yim.magiclibs.magicslotapi.util.Events;
+import pku.yim.magiclibs.magicslotapi.util.Util;
 import eos.moe.dragoncore.DragonCore;
 import eos.moe.dragoncore.api.event.PlayerSlotUpdateEvent;
 import eos.moe.dragoncore.database.IDataBase;
@@ -32,8 +32,8 @@ public class DragonCoreHook {
             String identifier = event.getIdentifier();
             //龙核特有傻逼 进服时identifier是null
             if (identifier != null) {
-                if (PlayerSlotAPI.getAPI().getSlotMap().containsKey(identifier)) {
-                    PlayerSlot slot = PlayerSlotAPI.getAPI().getSlotMap().get(identifier);
+                if (MagicSlotAPI.getAPI().getSlotMap().containsKey(identifier)) {
+                    PlayerSlot slot = MagicSlotAPI.getAPI().getSlotMap().get(identifier);
                     SlotUpdateEvent update = new SlotUpdateEvent(UpdateTrigger.DRAGON_CORE, event.getPlayer(), slot, null, newItem);
                     update.setUpdateImmediately();
                     Bukkit.getPluginManager().callEvent(update);

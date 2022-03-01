@@ -1,4 +1,4 @@
-package com.github.playerslotapi.slot;
+package pku.yim.magiclibs.magicslotapi.slot;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

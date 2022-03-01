@@ -1,6 +1,6 @@
-package com.github.playerslotapi.util;
+package pku.yim.magiclibs.magicslotapi.util;
 
-import com.github.playerslotapi.PlayerSlotAPI;
+import pku.yim.magiclibs.magicslotapi.MagicSlotAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
@@ -84,9 +84,9 @@ public class Events<T extends Event> implements Listener, EventExecutor {
     public static <T extends Event> Events<T> subscribe(Class<T> clazz, EventPriority priority, boolean ignoreCancelled, Function<T, Boolean> func) {
         Events<T> factory = new Events<>(clazz, func);
         if (Bukkit.isPrimaryThread()) {
-            Bukkit.getPluginManager().registerEvent(clazz, factory, priority, factory, PlayerSlotAPI.getPlugin(), ignoreCancelled);
+            Bukkit.getPluginManager().registerEvent(clazz, factory, priority, factory, MagicSlotAPI.getPlugin(), ignoreCancelled);
         } else {
-            Bukkit.getScheduler().runTask(PlayerSlotAPI.getPlugin(), () -> Bukkit.getPluginManager().registerEvent(clazz, factory, priority, factory, PlayerSlotAPI.getPlugin(), ignoreCancelled));
+            Bukkit.getScheduler().runTask(MagicSlotAPI.getPlugin(), () -> Bukkit.getPluginManager().registerEvent(clazz, factory, priority, factory, MagicSlotAPI.getPlugin(), ignoreCancelled));
         }
         return factory;
     }
@@ -139,7 +139,7 @@ public class Events<T extends Event> implements Listener, EventExecutor {
             if (Bukkit.isPrimaryThread()) {
                 handlerList.unregister(this);
             } else {
-                Bukkit.getScheduler().runTask(PlayerSlotAPI.getPlugin(), () -> handlerList.unregister(this));
+                Bukkit.getScheduler().runTask(MagicSlotAPI.getPlugin(), () -> handlerList.unregister(this));
             }
         } catch (Exception ignored) {
         }

@@ -1,11 +1,11 @@
-package com.github.playerslotapi.hook;
+package pku.yim.magiclibs.magicslotapi.hook;
 
 
-import com.github.playerslotapi.event.SlotUpdateEvent;
-import com.github.playerslotapi.event.UpdateTrigger;
-import com.github.playerslotapi.slot.PlayerSlot;
-import com.github.playerslotapi.slot.impl.VanillaEquipSlot;
-import com.github.playerslotapi.util.Events;
+import pku.yim.magiclibs.magicslotapi.event.SlotUpdateEvent;
+import pku.yim.magiclibs.magicslotapi.event.UpdateTrigger;
+import pku.yim.magiclibs.magicslotapi.slot.PlayerSlot;
+import pku.yim.magiclibs.magicslotapi.slot.impl.VanillaEquipSlot;
+import pku.yim.magiclibs.magicslotapi.util.Events;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -19,17 +19,15 @@ import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import pku.yim.magiclibs.magicslotapi.util.Util;
 
 import java.util.Map;
 import java.util.Set;
 
-import static com.github.playerslotapi.util.Util.isAir;
-import static com.github.playerslotapi.util.Util.newHashSet;
-
 
 public class VanillaHook {
 
-    private static final Set<String> BLOCKED_MATERIALS = newHashSet(
+    private static final Set<String> BLOCKED_MATERIALS = Util.newHashSet(
             "FURNACE", "CHEST", "TRAPPED_CHEST", "BEACON", "DISPENSER", "DROPPER", "HOPPER",
             "WORKBENCH", "ENCHANTMENT_TABLE", "ENDER_CHEST", "ANVIL", "BED_BLOCK", "FENCE_GATE",
             "SPRUCE_FENCE_GATE", "BIRCH_FENCE_GATE", "ACACIA_FENCE_GATE", "JUNGLE_FENCE_GATE",
@@ -127,7 +125,7 @@ public class VanillaHook {
         if (event.getAction() == InventoryAction.DROP_ALL_SLOT || event.getAction() == InventoryAction.DROP_ONE_SLOT) {
             // 鼠标有物品的时候按Q丢不了东西, InventoryAction却又不是NOTHING
             // 此乃Bukkit缺陷, 需自己解决
-            if (!isAir(event.getCursor())) {
+            if (!Util.isAir(event.getCursor())) {
                 return;
             }
             disableDropDetect = true;
@@ -166,7 +164,7 @@ public class VanillaHook {
             if (shift && event.getClickedInventory().getType() == InventoryType.PLAYER) {
                 VanillaEquipSlot quickEquipSlot = VanillaEquipSlot.matchType(event.getCurrentItem());
                 // 成功装备上的情况
-                if (quickEquipSlot != null && isAir(quickEquipSlot.get(player)) && (event.getSlotType() == SlotType.CONTAINER || event.getSlotType() == SlotType.QUICKBAR)) {
+                if (quickEquipSlot != null && Util.isAir(quickEquipSlot.get(player)) && (event.getSlotType() == SlotType.CONTAINER || event.getSlotType() == SlotType.QUICKBAR)) {
                     if (cancelSlotUpdate(UpdateTrigger.SHIFT_CLICK, player, quickEquipSlot, null, event.getCurrentItem())) {
                         event.setCancelled(true);
                         return;
@@ -190,7 +188,7 @@ public class VanillaHook {
                             int left = mainHandItem.getAmount();
                             for (int i = 9; i < 36; i++) {
                                 ItemStack possible = player.getInventory().getItem(i);
-                                if (isAir(possible)) {
+                                if (Util.isAir(possible)) {
                                     left = 0;
                                     break;
                                 }
@@ -241,7 +239,7 @@ public class VanillaHook {
                 ItemStack mainHandItem = player.getInventory().getItemInMainHand();
                 ItemStack item = event.getCurrentItem();
                 // 如果主手物品为空或和点击物品相似 则进行检查
-                if (isAir(mainHandItem) || mainHandItem.isSimilar(item) && mainHandItem.getMaxStackSize() > mainHandItem.getAmount()) {
+                if (Util.isAir(mainHandItem) || mainHandItem.isSimilar(item) && mainHandItem.getMaxStackSize() > mainHandItem.getAmount()) {
                     PlayerInventory inventory = player.getInventory();
                     int mainHandIndex = inventory.getHeldItemSlot();
                     int amount = item.getAmount();
@@ -273,7 +271,7 @@ public class VanillaHook {
                         }
                     }
                     // 如果主手是空气
-                    if (!abort && isAir(mainHandItem)) {
+                    if (!abort && Util.isAir(mainHandItem)) {
                         // 接着填充快捷栏
                         for (int i = mainHandIndex + 1; i < 9; i++) {
                             ItemStack possible = inventory.getItem(i);
@@ -288,7 +286,7 @@ public class VanillaHook {
                         // 如果点击了副手槽位且储存区有空气 放弃
                         if (!abort && event.getClickedInventory().getType() == InventoryType.PLAYER && event.getRawSlot() == 45) {
                             for (int i = 9; i < 36; i++) {
-                                if (isAir(inventory.getItem(i))) {
+                                if (Util.isAir(inventory.getItem(i))) {
                                     abort = true;
                                     break;
                                 }
@@ -297,7 +295,7 @@ public class VanillaHook {
                         // 如果主手前面有空气 放弃
                         if (!abort) {
                             for (int i = 0; i < mainHandIndex; i++) {
-                                if (isAir(inventory.getItem(i))) {
+                                if (Util.isAir(inventory.getItem(i))) {
                                     abort = true;
                                     break;
                                 }
@@ -307,7 +305,7 @@ public class VanillaHook {
                     // 如果没有放弃则触发事件
                     if (!abort) {
                         ItemStack newItem = item.clone();
-                        newItem.setAmount(Math.min((isAir(mainHandItem) ? 0 : mainHandItem.getAmount()) + amount, mainHandItem.getMaxStackSize()));
+                        newItem.setAmount(Math.min((Util.isAir(mainHandItem) ? 0 : mainHandItem.getAmount()) + amount, mainHandItem.getMaxStackSize()));
                         if (cancelSlotUpdate(UpdateTrigger.PICKUP, player, VanillaEquipSlot.MAINHAND, mainHandItem, newItem)) {
                             event.setCancelled(true);
                             return;
@@ -383,7 +381,7 @@ public class VanillaHook {
     private static void onPlayerInteract(PlayerInteractEvent event) {
         // 如果手中物品为空或者无法使用, 无需继续检查
         ItemStack current = event.getItem();
-        if (isAir(current) || event.useItemInHand().equals(Result.DENY)) {
+        if (Util.isAir(current) || event.useItemInHand().equals(Result.DENY)) {
             return;
         }
         if (event.getAction() == Action.PHYSICAL) {
@@ -402,7 +400,7 @@ public class VanillaHook {
             }
             final VanillaEquipSlot handSlot = event.getHand() == EquipmentSlot.HAND ? VanillaEquipSlot.MAINHAND : VanillaEquipSlot.OFFHAND;
             VanillaEquipSlot quickEquipSlot = VanillaEquipSlot.matchType(event.getItem());
-            if (quickEquipSlot != null && quickEquipSlot != VanillaEquipSlot.OFFHAND && isAir(quickEquipSlot.get(player))) {
+            if (quickEquipSlot != null && quickEquipSlot != VanillaEquipSlot.OFFHAND && Util.isAir(quickEquipSlot.get(player))) {
                 // 如果成功快速装备, 则顺便把主副手也给通知了, 然后短路处理
                 boolean equipResult = !cancelSlotUpdate(UpdateTrigger.HOTBAR, player, quickEquipSlot, null, current);
                 boolean handResult = !cancelSlotUpdate(UpdateTrigger.USE, player, handSlot, current, new ItemStack(Material.AIR));
@@ -582,7 +580,7 @@ public class VanillaHook {
      * @param event GUI关闭事件
      */
     private static void onInventoryClose(InventoryCloseEvent event) {
-        if (!isAir(event.getPlayer().getItemOnCursor())) {
+        if (!Util.isAir(event.getPlayer().getItemOnCursor())) {
             disableDropDetect = true;
         }
     }
@@ -603,7 +601,7 @@ public class VanillaHook {
         ItemStack newItem = player.getInventory().getItemInMainHand();
         ItemStack droppedItem = event.getItemDrop().getItemStack();
         ItemStack oldItem;
-        if (isAir(newItem)) {
+        if (Util.isAir(newItem)) {
             newItem = new ItemStack(Material.AIR);
             oldItem = droppedItem;
         } else {
@@ -628,7 +626,7 @@ public class VanillaHook {
         ItemStack item = event.getItem().getItemStack();
         ItemStack mainHand = inventory.getItemInMainHand();
         // 如果主手有物品
-        if (!isAir(mainHand)) {
+        if (!Util.isAir(mainHand)) {
             // 当且仅当相似且可堆叠时触发检查
             if (mainHand.isSimilar(item) && mainHand.getAmount() < mainHand.getMaxStackSize()) {
                 ItemStack newItem = item.clone();
@@ -643,7 +641,7 @@ public class VanillaHook {
         // 如果主手之前有空位, 返回
         for (int i = 0; i < inventory.getHeldItemSlot(); i++) {
             ItemStack current = inventory.getItem(i);
-            if (isAir(current)) {
+            if (Util.isAir(current)) {
                 return;
             }
         }
@@ -672,7 +670,7 @@ public class VanillaHook {
         // 其它指令则仅仅异步检查主手
         Player player = event.getPlayer();
         ItemStack mainhand = player.getInventory().getItemInMainHand();
-        if (isAir(mainhand)) {
+        if (Util.isAir(mainhand)) {
             return;
         }
         if (event.getMessage().toLowerCase().startsWith("/hat")) {

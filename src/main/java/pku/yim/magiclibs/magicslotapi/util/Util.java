@@ -1,4 +1,4 @@
-package com.github.playerslotapi.util;
+package pku.yim.magiclibs.magicslotapi.util;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;

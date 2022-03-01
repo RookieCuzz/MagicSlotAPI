@@ -1,15 +1,15 @@
-package com.github.playerslotapi;
+package pku.yim.magiclibs.magicslotapi;
 
-import com.github.playerslotapi.event.SlotUpdateEvent;
-import com.github.playerslotapi.hook.DragonCoreHook;
-import com.github.playerslotapi.hook.GermPluginHook;
-import com.github.playerslotapi.hook.VanillaHook;
-import com.github.playerslotapi.slot.PlayerSlot;
-import com.github.playerslotapi.slot.PlayerSlotCache;
-import com.github.playerslotapi.slot.impl.DragonCoreSlot;
-import com.github.playerslotapi.slot.impl.GermPluginSlot;
-import com.github.playerslotapi.slot.impl.VanillaEquipSlot;
-import com.github.playerslotapi.util.Events;
+import pku.yim.magiclibs.magicslotapi.event.SlotUpdateEvent;
+import pku.yim.magiclibs.magicslotapi.hook.DragonCoreHook;
+import pku.yim.magiclibs.magicslotapi.hook.GermPluginHook;
+import pku.yim.magiclibs.magicslotapi.hook.VanillaHook;
+import pku.yim.magiclibs.magicslotapi.slot.PlayerSlot;
+import pku.yim.magiclibs.magicslotapi.slot.PlayerSlotCache;
+import pku.yim.magiclibs.magicslotapi.slot.impl.DragonCoreSlot;
+import pku.yim.magiclibs.magicslotapi.slot.impl.GermPluginSlot;
+import pku.yim.magiclibs.magicslotapi.slot.impl.VanillaEquipSlot;
+import pku.yim.magiclibs.magicslotapi.util.Events;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.*;
@@ -25,7 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 静态单例, 不可实例化
  * 建议自行relocate
  */
-public class PlayerSlotAPI {
+public class MagicSlotAPI {
 
     private static final GermPluginHook GERM_PLUGIN_HOOK;
     private static final DragonCoreHook DRAGON_CORE_HOOK;
@@ -34,7 +34,7 @@ public class PlayerSlotAPI {
     /**
      * 核心管理器实例
      */
-    private static final PlayerSlotAPI API;
+    private static final MagicSlotAPI API;
     /**
      * 加载本API的插件
      */
@@ -57,7 +57,7 @@ public class PlayerSlotAPI {
         } else {
             DRAGON_CORE_HOOK = null;
         }
-        ClassLoader loader = PlayerSlotAPI.class.getClassLoader();
+        ClassLoader loader = MagicSlotAPI.class.getClassLoader();
         try {
             Class<?> pluginClassLoader = Class.forName("org.bukkit.plugin.java.PluginClassLoader");
             while (!(pluginClassLoader.isInstance(loader))) {
@@ -69,7 +69,7 @@ public class PlayerSlotAPI {
             Field field = pluginClassLoader.getDeclaredField("plugin");
             field.setAccessible(true);
             PLUGIN = (Plugin) field.get(loader);
-            API = new PlayerSlotAPI();
+            API = new MagicSlotAPI();
         }catch (Exception e){
             throw new RuntimeException(PREFIX + "错误：未找到Bukkit插件主类");
         }
@@ -78,7 +78,7 @@ public class PlayerSlotAPI {
     private final Map<String, PlayerSlot> SLOT_MAP = new ConcurrentHashMap<>();
     private final Map<UUID, PlayerSlotCache> PLAYER_MAP = new ConcurrentHashMap<>();
 
-    private PlayerSlotAPI() {
+    private MagicSlotAPI() {
         Events.subscribe(PlayerJoinEvent.class, event -> {
             PLAYER_MAP.put(event.getPlayer().getUniqueId(), new PlayerSlotCache(event.getPlayer()));
         });
@@ -106,7 +106,7 @@ public class PlayerSlotAPI {
         return PLUGIN;
     }
 
-    public static PlayerSlotAPI getAPI() {
+    public static MagicSlotAPI getAPI() {
         return API;
     }
 
@@ -131,12 +131,12 @@ public class PlayerSlotAPI {
             return;
         }
         if (slot instanceof DragonCoreSlot) {
-            if (PlayerSlotAPI.DRAGON_CORE_HOOK == null) {
+            if (MagicSlotAPI.DRAGON_CORE_HOOK == null) {
                 return;
             }
             SLOT_MAP.put(((DragonCoreSlot) slot).getIdentifier(), slot);
         } else if (slot instanceof GermPluginSlot) {
-            if (PlayerSlotAPI.GERM_PLUGIN_HOOK == null) {
+            if (MagicSlotAPI.GERM_PLUGIN_HOOK == null) {
                 return;
             }
             SLOT_MAP.put(((GermPluginSlot) slot).getIdentifier(), slot);
@@ -188,7 +188,7 @@ public class PlayerSlotAPI {
             cache.updateItem(event.getTrigger(), event.getSlot(), event.getNewItem());
         } else {
             // 否则延迟1 tick 检查, 准确更新装备缓存
-            Bukkit.getScheduler().runTask(PlayerSlotAPI.getPlugin(), () -> {
+            Bukkit.getScheduler().runTask(MagicSlotAPI.getPlugin(), () -> {
                 event.getSlot().get(event.getPlayer(),
                         item -> cache.updateItem(event.getTrigger(), event.getSlot(), item));
             });
@@ -196,10 +196,10 @@ public class PlayerSlotAPI {
     }
 
     private void onPlayerRespawn(PlayerRespawnEvent event) {
-        Bukkit.getScheduler().runTaskLater(PlayerSlotAPI.getPlugin(), () -> getSlotCache(event.getPlayer()).updateAll(), 1L);
+        Bukkit.getScheduler().runTaskLater(MagicSlotAPI.getPlugin(), () -> getSlotCache(event.getPlayer()).updateAll(), 1L);
     }
 
     private void onWorldChange(PlayerTeleportEvent event) {
-        Bukkit.getScheduler().runTaskLater(PlayerSlotAPI.getPlugin(), () -> getSlotCache(event.getPlayer()).updateAll(), 1L);
+        Bukkit.getScheduler().runTaskLater(MagicSlotAPI.getPlugin(), () -> getSlotCache(event.getPlayer()).updateAll(), 1L);
     }
 }

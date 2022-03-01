@@ -1,9 +1,9 @@
-package com.github.playerslotapi.slot.impl;
+package pku.yim.magiclibs.magicslotapi.slot.impl;
 
-import com.github.playerslotapi.PlayerSlotAPI;
-import com.github.playerslotapi.event.SlotUpdateEvent;
-import com.github.playerslotapi.event.UpdateTrigger;
-import com.github.playerslotapi.slot.PlayerSlot;
+import pku.yim.magiclibs.magicslotapi.MagicSlotAPI;
+import pku.yim.magiclibs.magicslotapi.event.SlotUpdateEvent;
+import pku.yim.magiclibs.magicslotapi.event.UpdateTrigger;
+import pku.yim.magiclibs.magicslotapi.slot.PlayerSlot;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -31,17 +31,17 @@ public class DragonCoreSlot extends PlayerSlot {
     @Override
     public void get(Player player, Consumer<ItemStack> callback) {
         if (Bukkit.isPrimaryThread()) {
-            Bukkit.getScheduler().runTaskAsynchronously(PlayerSlotAPI.getPlugin(), () -> {
-                PlayerSlotAPI.getDragonCoreHook().getItemFromSlot(player, identifier, callback);
+            Bukkit.getScheduler().runTaskAsynchronously(MagicSlotAPI.getPlugin(), () -> {
+                MagicSlotAPI.getDragonCoreHook().getItemFromSlot(player, identifier, callback);
             });
         } else {
-            PlayerSlotAPI.getDragonCoreHook().getItemFromSlot(player, identifier, callback);
+            MagicSlotAPI.getDragonCoreHook().getItemFromSlot(player, identifier, callback);
         }
     }
 
     @Override
     public void set(Player player, ItemStack item, Consumer<Boolean> callback) {
-        PlayerSlotAPI.getDragonCoreHook().setItemToSlot(player, identifier, item,
+        MagicSlotAPI.getDragonCoreHook().setItemToSlot(player, identifier, item,
                 result -> {
                     if (result) {
                         SlotUpdateEvent updateEvent = new SlotUpdateEvent(UpdateTrigger.SET, player, this, null, item);

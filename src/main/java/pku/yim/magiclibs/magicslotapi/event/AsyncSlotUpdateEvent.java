@@ -1,6 +1,6 @@
-package com.github.playerslotapi.event;
+package pku.yim.magiclibs.magicslotapi.event;
 
-import com.github.playerslotapi.slot.PlayerSlot;
+import pku.yim.magiclibs.magicslotapi.slot.PlayerSlot;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;

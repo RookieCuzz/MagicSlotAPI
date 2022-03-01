@@ -1,8 +1,8 @@
-package com.github.playerslotapi.slot.impl;
+package pku.yim.magiclibs.magicslotapi.slot.impl;
 
-import com.github.playerslotapi.event.SlotUpdateEvent;
-import com.github.playerslotapi.event.UpdateTrigger;
-import com.github.playerslotapi.slot.PlayerSlot;
+import pku.yim.magiclibs.magicslotapi.event.SlotUpdateEvent;
+import pku.yim.magiclibs.magicslotapi.event.UpdateTrigger;
+import pku.yim.magiclibs.magicslotapi.slot.PlayerSlot;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

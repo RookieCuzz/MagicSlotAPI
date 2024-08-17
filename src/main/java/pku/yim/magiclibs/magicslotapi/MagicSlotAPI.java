@@ -1,13 +1,9 @@
 package pku.yim.magiclibs.magicslotapi;
 
 import pku.yim.magiclibs.magicslotapi.event.SlotUpdateEvent;
-import pku.yim.magiclibs.magicslotapi.hook.DragonCoreHook;
-import pku.yim.magiclibs.magicslotapi.hook.GermPluginHook;
 import pku.yim.magiclibs.magicslotapi.hook.VanillaHook;
 import pku.yim.magiclibs.magicslotapi.slot.PlayerSlot;
 import pku.yim.magiclibs.magicslotapi.slot.PlayerSlotCache;
-import pku.yim.magiclibs.magicslotapi.slot.impl.DragonCoreSlot;
-import pku.yim.magiclibs.magicslotapi.slot.impl.GermPluginSlot;
 import pku.yim.magiclibs.magicslotapi.slot.impl.VanillaEquipSlot;
 import pku.yim.magiclibs.magicslotapi.util.Events;
 import org.bukkit.Bukkit;
@@ -27,8 +23,6 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class MagicSlotAPI {
 
-    private static final GermPluginHook GERM_PLUGIN_HOOK;
-    private static final DragonCoreHook DRAGON_CORE_HOOK;
     private static String PREFIX = "§9[§ePlayerSlotAPI§9]§f";
 
     /**
@@ -41,22 +35,7 @@ public class MagicSlotAPI {
     private static final Plugin PLUGIN;
 
     static {
-        if (Bukkit.getPluginManager().getPlugin("GermPlugin") != null) {
-            //萌芽
-            GERM_PLUGIN_HOOK = new GermPluginHook();
-            DragonCoreHook.register();
-            Bukkit.getConsoleSender().sendMessage(PREFIX+"已加载GermPlugin作为前置!");
-        } else {
-            GERM_PLUGIN_HOOK = null;
-        }
-        if (Bukkit.getPluginManager().getPlugin("DragonCore") != null) {
-            //龙核
-            DRAGON_CORE_HOOK = new DragonCoreHook();
-            GermPluginHook.register();
-            Bukkit.getConsoleSender().sendMessage(PREFIX+"已加载DragonCore作为前置!");
-        } else {
-            DRAGON_CORE_HOOK = null;
-        }
+
         ClassLoader loader = MagicSlotAPI.class.getClassLoader();
         try {
             Class<?> pluginClassLoader = Class.forName("org.bukkit.plugin.java.PluginClassLoader");
@@ -94,13 +73,6 @@ public class MagicSlotAPI {
         reload();
     }
 
-    public static GermPluginHook getGermPluginHook() {
-        return GERM_PLUGIN_HOOK;
-    }
-
-    public static DragonCoreHook getDragonCoreHook() {
-        return DRAGON_CORE_HOOK;
-    }
 
     public static Plugin getPlugin() {
         return PLUGIN;
@@ -129,17 +101,6 @@ public class MagicSlotAPI {
     public void registerSlot(PlayerSlot slot) {
         if (SLOT_MAP.containsKey(slot.toString())) {
             return;
-        }
-        if (slot instanceof DragonCoreSlot) {
-            if (MagicSlotAPI.DRAGON_CORE_HOOK == null) {
-                return;
-            }
-            SLOT_MAP.put(((DragonCoreSlot) slot).getIdentifier(), slot);
-        } else if (slot instanceof GermPluginSlot) {
-            if (MagicSlotAPI.GERM_PLUGIN_HOOK == null) {
-                return;
-            }
-            SLOT_MAP.put(((GermPluginSlot) slot).getIdentifier(), slot);
         } else {
             SLOT_MAP.put(slot.toString(), slot);
         }
